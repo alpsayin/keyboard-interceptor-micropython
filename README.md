@@ -1,4 +1,4 @@
-# keyboard-interceptor-esp
+# keyboard-interceptor-micropython (esp32)
 Proof-of-concept keyboard keystroke interceptor for PS/2 protocol proposed to be used with USB-to-ps/2 hardware downgrade
 
 (wip)
