@@ -186,23 +186,27 @@ def heartbeat_callback(timer_obj):
     update_auto_baudrate(frequency_counter.freq_hz)
 
 
+def prepare_status_string():
+    global status_dict
+    return 'Uptime: {seconds: 5d}s\tfreq:{freq: 4d}\tautobaud:{autobaud}\tpassthru:{passthrough}'.format(
+        **status_dict
+    )
+
+
 def publish_timer_callback(timer_obj):
     global status_dict
     mqtt_wrapper.mqtt_client.publish(
         MQTT_TOPIC,
-        '# {hostname} Uptime: {seconds: 5d}s\tfreq:{freq: 4d}\tautobaud:{autobaud}\t'.format(
-            **status_dict
+        '# {} {}'.format(
+            status_dict['hostname'],
+            prepare_status_string()
         )
     )
 
 
 def print_status():
     global status_dict
-    print(
-        'Uptime: {seconds: 5d}s\t\tfreq:{freq: 4d}\t\tautobaud:{autobaud}\t\t'.format(
-            **status_dict
-        )
-    )
+    print(prepare_status_string())
     status_dict['seconds'] += 1
 
 
