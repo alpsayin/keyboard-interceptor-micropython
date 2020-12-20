@@ -1,5 +1,5 @@
 import time
-from umqtt.robust import MQTTClient
+from umqtt.simple import MQTTClient
 
 # Publish test messages e.g. with:
 # mosquitto_pub -t foo_topic -m hello

@@ -21,6 +21,7 @@ from credentials import WLAN_SSID, WLAN_KEY
 DHCP_HOSTNAME = 'espresso0'
 
 # MQTT
+mqtt_fail = False
 MQTT_HOSTNAME = 'alpcer0.local'
 MQTT_TOPIC = 'kybIntcpt'
 
@@ -62,11 +63,15 @@ def check_uart():
 
 
 def flush_buffer():
-    global capture_buffer
+    global capture_buffer, mqtt_fail
     captured, processed_len = keyscan.keyscan_to_utf8(capture_buffer)
     capture_buffer = capture_buffer[processed_len:]
     if len(captured) != 0:
-        mqtt_wrapper.mqtt_client.publish(MQTT_TOPIC, captured)
+        try:
+            mqtt_wrapper.mqtt_client.publish(MQTT_TOPIC, captured)
+        except OSError as ose:
+            print('MQTT publish error: {}'.format(ose))
+            mqtt_fail = True
 
 
 def simulate_capture(simulated_capture_str):
@@ -197,20 +202,41 @@ def prepare_status_string():
 
 
 def publish_timer_callback(timer_obj):
-    global status_dict
-    mqtt_wrapper.mqtt_client.publish(
-        MQTT_TOPIC,
-        '# {} {}'.format(
-            status_dict['hostname'],
-            prepare_status_string()
+    global status_dict, mqtt_fail
+    try:
+        mqtt_wrapper.mqtt_client.publish(
+            MQTT_TOPIC,
+            '# {} {}'.format(
+                status_dict['hostname'],
+                prepare_status_string()
+            )
         )
-    )
+    except OSError as ose:
+        print('MQTT periodic publish error: {}'.format(ose))
+        mqtt_fail = True
 
 
 def print_status():
     global status_dict
     print(prepare_status_string())
     status_dict['seconds'] += 1
+
+
+def restart_wifi(timeout=None):
+    global wlan
+    wlan.active(False)
+    time.sleep(1)
+    wlan.active(True)
+    wlan.connect(WLAN_SSID, WLAN_KEY)
+    start_time = time.time()
+    while not wlan.isconnected():
+        if timeout is not None:
+            if time.time()-start_time > timeout:
+                return False
+    print('network config:', wlan.ifconfig())
+    print('dhcp hostname', wlan.config('dhcp_hostname'))
+    status_dict.update(hostname=wlan.config('dhcp_hostname'))
+    return True
 
 
 def init_wifi(timeout=None):
@@ -293,10 +319,23 @@ def main_init():
 
 
 def main():
+    global mqtt_fail
     repl_wait()
     print('app.py')
     main_init()
     while True:
-        mqtt_wrapper.mqtt_client.check_msg()
+        # MQTT Task
+        try:
+            mqtt_wrapper.mqtt_client.check_msg()
+        except OSError as ose:
+            print('MQTT check message failed: {}'.format(ose))
+            mqtt_fail = True
+        # UART Task
         check_uart()
+        # MQTT fail handler
+        if mqtt_fail:
+            print('Trying to re-establish connection.')
+            mqtt_fail = False
+            restart_wifi(3)
+            init_mqtt()
         time.sleep(0.005)
