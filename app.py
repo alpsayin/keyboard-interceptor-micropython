@@ -23,7 +23,7 @@ display = None
 
 # wifi
 wlan = None
-from wifi_credentials import WLAN_SSID, WLAN_KEY
+from credentials import WLAN_SSID, WLAN_KEY
 DHCP_HOSTNAME = 'espresso0'
 
 # MQTT
