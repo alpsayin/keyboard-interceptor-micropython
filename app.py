@@ -130,9 +130,9 @@ def handle_cmd(msg):
             MQTT_TOPIC,
             '{}:{}'.format(DHCP_HOSTNAME, splitted)
         )
-    elif msg.startswith('SIMULATE_CAPTURE '):
+    elif msg.startswith('SIMULATE '):
         status_dict.update(msg=msg.splitlines()[0])
-        splitted = msg.split('SIMULATE_CAPTURE ')[1]
+        splitted = msg.split('SIMULATE ')[1]
         print('SimCap: {}'.format(splitted))
         simulate_capture(splitted)
     elif msg.startswith('INJECT '):
