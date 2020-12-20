@@ -40,7 +40,7 @@ status_dict = dict(
     seconds=0,
     freq=10000,
     msg=None,
-    autobaud=True,
+    autobaud=False,
     passthrough=True
 )
 
