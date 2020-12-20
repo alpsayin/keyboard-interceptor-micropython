@@ -1,12 +1,9 @@
 import machine, time, os
 import network
 import _thread
-import led
 from machine import Timer, WDT, Pin
 from micropython import const, mem_info
 import gc
-import colors
-import lcd
 import mqtt_wrapper
 # import crypto_wrapper
 import crypto_wrapper_none as crypto_wrapper
@@ -17,9 +14,6 @@ from freq_counter import FreqCounter
 BOOT_TIME = const(3)
 DEVICE_FREQ = const(240 * 1000000)
 HEARTBEAT_PERIOD = const(1000)  # ms
-
-# display
-display = None
 
 # wifi
 wlan = None
@@ -39,7 +33,6 @@ status_dict = dict(
     hostname='null',
     seconds=0,
     freq=10000,
-    msg=None,
     autobaud=True
 )
 
@@ -104,10 +97,8 @@ def disable_autobaud(splitted):
 def handle_cmd(msg):
     msg = msg.decode()
     if msg.startswith('FLUSH'):
-        status_dict.update(msg=msg.splitlines()[0])
         flush_buffer()
     elif msg.startswith('ECHO '):
-        status_dict.update(msg=msg.splitlines()[0])
         splitted = msg.split('ECHO ')[1]
         print('MQTT Echo: {}'.format(splitted))
         mqtt_wrapper.mqtt_client.publish(
@@ -115,32 +106,26 @@ def handle_cmd(msg):
             '{}:{}'.format(DHCP_HOSTNAME, splitted)
         )
     elif msg.startswith('SIMULATE_CAPTURE '):
-        status_dict.update(msg=msg.splitlines()[0])
         splitted = msg.split('SIMULATE_CAPTURE ')[1]
         print('SimCap: {}'.format(splitted))
         simulate_capture(splitted)
     elif msg.startswith('INJECT '):
-        status_dict.update(msg=msg.splitlines()[0])
         splitted = msg.split('INJECT ')[1]
         print('Inject: {}'.format(splitted))
         inject_string(splitted)
     elif msg.startswith('AUTOBAUD'):
-        status_dict.update(msg=msg.splitlines()[0])
         print('Autobaud on')
         enable_autobaud()
     elif msg.startswith('BAUD '):
-        status_dict.update(msg=msg.splitlines()[0])
         splitted = msg.split('BAUD ')[1]
         print('Baud: {}'.format(splitted))
         disable_autobaud(splitted)
     else:
         print('Unknown MQTT message received: {}'.format(msg))
         return
-    display.update_popup(msg)
 
 
 def on_mqtt_msg_received(topic, msg):
-    global status_dict, display
     if msg.startswith('#'):
         print('MQTT comment: {}'.format(msg))
         return
@@ -255,19 +240,7 @@ def main_init():
     global display, wlan
     machine.freq(DEVICE_FREQ)
 
-    led.init()
-    led.heartbeat_color = led.RED
-    led.heartbeat(True)
-
-    display = lcd.Display()
-    display.init_lcd()
-    display.update_popup(subtitle=MQTT_TOPIC, cmd='n0n3!\nOn Init')
-
-    display.wifi_connecting(WLAN_SSID, WLAN_KEY)
     if(init_wifi()):
-        led.heartbeat_color = led.GREEN
-        ifconfig = wlan.ifconfig()
-        display.wifi_connected(ifconfig, status_dict['hostname'])
         print('Wifi initialised')
 
     if(uart_wrapper.init() is not None):

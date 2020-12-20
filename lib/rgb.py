@@ -1,1 +1,0 @@
-../../micropython-esp32-wrover-lcd/rgb.py
