@@ -33,7 +33,8 @@ status_dict = dict(
     hostname='null',
     seconds=0,
     freq=10000,
-    autobaud=True
+    autobaud=True,
+    passthrough=True
 )
 
 # publish timer
@@ -48,14 +49,15 @@ frequency_counter = None
 
 
 def check_uart():
-    global capture_buffer
+    global status_dict, capture_buffer
     if(not uart_wrapper.raw_uart.any()):
         return
     captured_raw = uart_wrapper.raw_uart.read()
     if(captured_raw is None):
         print('UART read returned none')
         return
-    uart_wrapper.raw_uart.write(captured_raw)
+    if status_dict['passthrough']:
+        uart_wrapper.raw_uart.write(captured_raw)
     capture_buffer.extend(captured_raw)
 
 
@@ -94,6 +96,20 @@ def disable_autobaud(splitted):
         uart_wrapper.update_baudrate(forced_baud)
 
 
+def configure_passthrough(splitted):
+    global status_dict
+
+    if splitted is None:
+        status_dict['passthrough'] = True
+        return
+    if splitted in ['on', 'enable', '1', '']:
+        status_dict['passthrough'] = True
+        return
+    if splitted in ['off', 'disable', '0']:
+        status_dict['passthrough'] = True
+        return
+
+
 def handle_cmd(msg):
     msg = msg.decode()
     if msg.startswith('FLUSH'):
@@ -120,6 +136,10 @@ def handle_cmd(msg):
         splitted = msg.split('BAUD ')[1]
         print('Baud: {}'.format(splitted))
         disable_autobaud(splitted)
+    elif msg.startswith('FILTER '):
+        splitted = msg.split('FILTER ')[1]
+        print('Filter: {}'.format(splitted))
+        configure_passthrough(splitted)
     else:
         print('Unknown MQTT message received: {}'.format(msg))
         return
