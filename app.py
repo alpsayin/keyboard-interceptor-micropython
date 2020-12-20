@@ -32,7 +32,7 @@ heartbeat = Timer(-1)
 status_dict = dict(
     hostname='null',
     seconds=0,
-    freq=10000,
+    freq=uart_wrapper.DEFAULT_BAUDRATE,
     autobaud=False,
     passthrough=True
 )

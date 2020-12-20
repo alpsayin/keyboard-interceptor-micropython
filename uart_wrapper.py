@@ -6,13 +6,14 @@ TX_PIN = const(26)
 RX_PIN = const(27)
 BAUD_R5 = const(115200)
 BAUD_R8 = const(921600)
+DEFAULT_BAUDRATE = const(13700)
 TXBUF_LEN = const(256)
 RXBUF_LEN = const(256)
 READ_TIMEOUT = 0  # timeout specifies the time to wait for the first character (ms)
 WRITE_WAIT = 0  # timeout_char specifies the time to wait between characters (ms)
 
 raw_uart = None
-baudrate = BAUD_R8
+baudrate = DEFAULT_BAUDRATE
 
 
 def update_baudrate(new_baudrate):
