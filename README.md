@@ -9,7 +9,8 @@ PS/2 is simple and practically readable by UART.
 We want to explore the idea of rapid IOT enabled hardware exploit development.
 ESP32 with micropython is good for rapid prototyping which makes it extremely suitable for this case.
  - Wifi is a breeze with micropython
- - Can use MQTT for comms, because why not
+ - WebRepl means we already have access to the device console so we don't even need to bother with comms (http://micropython.org/webrepl/#espresso0.local:8266/ )
+   - But there is a simple MQTT library for comms, so why not
  - Encryption is possible
  - Code readability is superb
  - They're cheap and accessible 
