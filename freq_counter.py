@@ -29,5 +29,5 @@ class FreqCounter():
 
     def average_samples(self):
         self.period_us = sum(self.period_samples) / NUM_SAMPLES
-        print('{} periods {}'.format(self.pin, self.period_samples))
+        # print('{} periods {}'.format(self.pin, self.period_samples))
         self.freq_hz = 1000000/self.period_us
