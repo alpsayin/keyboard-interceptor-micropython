@@ -1,0 +1,1 @@
+../../micropython-esp32-wrover-lcd/setup.py

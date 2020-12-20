@@ -1,0 +1,13 @@
+diff --git a/components/esp32/Kconfig b/components/esp32/Kconfig
+index e8416745..cad12942 100644
+--- a/components/esp32/Kconfig
++++ b/components/esp32/Kconfig
+@@ -476,7 +476,7 @@ config ULP_COPROC_RESERVE_MEM
+ 
+ choice ESP32_PANIC
+     prompt "Panic handler behaviour"
+-    default ESP32_PANIC_PRINT_REBOOT
++    default ESP32_PANIC_SILENT_REBOOT
+     help
+         If FreeRTOS detects unexpected behaviour or an unhandled exception, the panic handler is
+         invoked. Configure the panic handlers action here.

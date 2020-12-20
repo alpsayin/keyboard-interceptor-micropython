@@ -4,3 +4,4 @@ pymakr.conf
 /pymakr.conf
 .vscode/*
 .directory
+*credentials.py
