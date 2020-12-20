@@ -59,15 +59,16 @@ frequency_counter = None
 
 def check_uart():
     global status_dict, capture_buffer
-    if(not uart_wrapper.raw_uart.any()):
+    if(0 == uart_wrapper.raw_uart.any()):
         return
-    captured_raw = uart_wrapper.raw_uart.read()
-    if(captured_raw is None):
-        print('UART read returned none')
-        return
-    if status_dict['passthrough']:
-        uart_wrapper.raw_uart.write(captured_raw)
-    capture_buffer.extend(captured_raw)
+    while(0 != uart_wrapper.raw_uart.any()):
+        captured_raw = uart_wrapper.raw_uart.read()
+        if(captured_raw is None):
+            print('UART read returned none')
+            return
+        if status_dict['passthrough']:
+            uart_wrapper.raw_uart.write(captured_raw)
+        capture_buffer.extend(captured_raw)
 
 
 def flush_buffer():
