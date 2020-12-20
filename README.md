@@ -41,6 +41,6 @@ There are two tasks that run in a round-robin manner (not great, not terrible).
 #### Future Works &| Contribution Requests
 Sure, why not. This will need and I will not bother with:
 1. Keystroke processing; captured keystrokes are not really processed and converted to utf8 or similar. Would be better to actually do this processing. 
-1. Secure comms; either MQTT over TLS or something better than shared-key-AES. Even an HTTPS based REST API is acceptible. 
+1. Secure comms; either MQTT over TLS or something better than shared-key-AES. Even an HTTPS based REST API is acceptable. 
 1. WiFi AP option; instead of connecting to existing AP. Should be a hidden AP though.
 1. Robustness upgrades; no idea what'll happen if WiFi &| MQTT disconnects.
