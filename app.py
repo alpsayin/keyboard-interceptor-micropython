@@ -35,7 +35,8 @@ status_dict = dict(
     seconds=0,
     freq=uart_wrapper.DEFAULT_BAUDRATE,
     autobaud=False,
-    passthrough=True
+    passthrough=True,
+    mem_free=gc.mem_free()
 )
 
 # publish timer
@@ -196,7 +197,8 @@ def heartbeat_callback(timer_obj):
 
 def prepare_status_string():
     global status_dict
-    return 'Uptime: {seconds: 5d}s\tfreq:{freq: 4d}\tautobaud:{autobaud}\tpassthru:{passthrough}'.format(
+    status_dict['mem_free'] = gc.mem_free()
+    return 'Uptime: {seconds: 5d}s\tfreq:{freq: 4d}\tautobaud:{autobaud}\tpassthru:{passthrough}\tmem_free:{mem_free}'.format(
         **status_dict
     )
 
