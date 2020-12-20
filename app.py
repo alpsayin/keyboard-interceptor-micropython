@@ -105,7 +105,7 @@ def disable_autobaud(splitted):
 
 def configure_passthrough(splitted):
     global status_dict
-
+    splitted = splitted.lower()
     if splitted is None:
         status_dict['passthrough'] = True
         return
