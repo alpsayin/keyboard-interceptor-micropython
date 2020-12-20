@@ -52,10 +52,10 @@ def check_uart():
     if(not uart_wrapper.raw_uart.any()):
         return
     captured_raw = uart_wrapper.raw_uart.read()
-    uart_wrapper.raw_uart.write(captured_raw)
     if(captured_raw is None):
         print('UART read returned none')
         return
+    uart_wrapper.raw_uart.write(captured_raw)
     capture_buffer.extend(captured_raw)
 
 
