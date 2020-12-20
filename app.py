@@ -178,6 +178,7 @@ def update_auto_baudrate(new_freq):
     if freq_diff / new_freq >= 0.1:
         print('Setting baudrate to {}kHz'.format(new_freq))
         uart_wrapper.update_baudrate(new_freq)
+        status_dict['freq'] = uart_wrapper.baudrate
 
 
 def heartbeat_callback(timer_obj):
