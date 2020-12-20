@@ -33,7 +33,7 @@ status_dict = dict(
     hostname='null',
     seconds=0,
     freq=10000,
-    autobaud=True,
+    autobaud=False,
     passthrough=True
 )
 
