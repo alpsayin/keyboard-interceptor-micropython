@@ -231,6 +231,7 @@ def publish_timer_callback(timer_obj):
     except OSError as ose:
         print('MQTT periodic publish error: {}'.format(ose))
         mqtt_fail = True
+    gc.collect()
 
 
 def print_status():
