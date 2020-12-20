@@ -88,7 +88,7 @@ def disable_autobaud(splitted):
     try:
         forced_baud = int(splitted)
     except:
-        print('Invalid baud message received: {}'.format(msg))
+        print('Invalid baud message received: {}'.format(splitted))
     if forced_baud != -1:
         status_dict.update(autobaud=False, freq=forced_baud)
         uart_wrapper.update_baudrate(forced_baud)
