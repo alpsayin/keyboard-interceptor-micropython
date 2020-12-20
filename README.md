@@ -8,11 +8,11 @@ USB programming is hard. I'm lazy.
 PS/2 is simple and practically readable by UART.
 We want to explore the idea of rapid IOT enabled hardware exploit development.
 ESP32 with micropython is good for rapid prototyping which makes it extremely suitable for this case.
- - wifi is a breeze with micropython
- - can use MQTT for comms, because why not
- - encryption is possible
- - code readability is superb
- - they're cheap 
+ - Wifi is a breeze with micropython
+ - Can use MQTT for comms, because why not
+ - Encryption is possible
+ - Code readability is superb
+ - They're cheap and accessible 
  - We can power an ESP32 from the power line of PS/2 which is actually powered by USB in our case.
 
 #### Goals
