@@ -34,9 +34,10 @@ ESP32 with micropython is good for rapid prototyping which makes it extremely su
 3. (Preferred) Use VS Code + Pymakr to upload.
 
 #### What software does
-There are two tasks that run in a round-robin manner (not great, not terrible).
+There are two tasks and a periodic timer that run in a round-robin manner (not great, not terrible).
 1. UART task: polls the uart buffer for incoming bytes and "echoes" them (in reality they're forwarded to pc). Received chars are placed in a capture buffer, which is processed (not yet) and then published to an MQTT topic.
 2. MQTT task: listens for MQTT messages and controls the software. Most notably it can inject keystrokes.
+Timer: Sets the uart baudrate with respect to the recently measured clock frequency
 
 #### Future Works &| Contribution Requests
 Sure, why not. This will need and I will not bother with:
