@@ -182,8 +182,9 @@ def update_auto_baudrate(new_freq):
 
 def heartbeat_callback(timer_obj):
     global frequency_counter
-    print_status()
+    frequency_counter.average_samples()
     update_auto_baudrate(frequency_counter.freq_hz)
+    print_status()
 
 
 def prepare_status_string():
