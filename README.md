@@ -28,7 +28,9 @@ ESP32 with micropython is good for rapid prototyping which makes it extremely su
 
 #### Software Preparation Steps
 1. Download and install the latest micropython firmware from https://micrpython.org
-2. Clone and copy the py files into lib folder from https://github.com/alpsayin/micropython-esp32-wrover-lcd
+2. Need to grab LCD library from https://github.com/alpsayin/micropython-esp32-wrover-lcd:
+   1. Either clone the repository with its original name to the same directory you clone this repo.
+   1. Or copy the py files into lib folder 
 3. (Preferred) Use VS Code + Pymakr to upload.
 
 #### What software does
