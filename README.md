@@ -38,6 +38,13 @@ There are two tasks that run in a round-robin manner (not great, not terrible).
 #### Future Works &| Contribution Requests
 Sure, why not. This will need and I will not bother with:
 1. Keystroke processing; captured keystrokes are not really processed and converted to utf8 or similar. Would be better to actually do this processing. 
+   - Some good references to actually implement processing of keyscan codes in the future
+      - https://techdocs.altium.com/display/FPGA/PS2+Keyboard+Scan+Codes
+      - https://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
+      - https://www.nutsvolts.com/magazine/article/get-ascii-data-from-ps-2-keyboards
 1. Secure comms; either MQTT over TLS or something better than shared-key-AES. Even an HTTPS based REST API is acceptable. 
+   - Regarding AES: currently available modes are CBC & CTR. https://docs.micropython.org/en/latest/library/ucryptolib.html
+   - Regarding SSL (i think it's better to go SSL):https://github.com/micropython/micropython/pull/3398
 1. WiFi AP option; instead of connecting to existing AP. Should be a hidden AP though.
+   - Wifi AP: http://docs.micropython.org/en/v1.13/esp32/quickref.html#networking
 1. Robustness upgrades; no idea what'll happen if WiFi &| MQTT disconnects.
