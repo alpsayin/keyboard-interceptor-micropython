@@ -2,6 +2,7 @@ import time
 from machine import Pin
 from micropython import const
 import array
+from uart_wrapper import DEFAULT_BAUDRATE
 
 NUM_SAMPLES = const(8)
 
@@ -17,7 +18,7 @@ class FreqCounter():
         # super().__init__()
         self.pin = Pin(pin_number, Pin.IN, Pin.PULL_UP)
         self.last_ticks_us = 0
-        self.period_us = int(1000000/13700)
+        self.period_us = int(1000000/DEFAULT_BAUDRATE)
         self.period_samples = array.array('L', [self.period_us] * NUM_SAMPLES)
         self.freq_hz = int(1/self.period_us)
         self.list_idx = 0
