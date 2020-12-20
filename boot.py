@@ -1,5 +1,5 @@
 import machine
 print('boot.py')
 
-# import webrepl
-# webrepl.start()
+import webrepl
+webrepl.start()
