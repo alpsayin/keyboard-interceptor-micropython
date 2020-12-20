@@ -247,11 +247,16 @@ def init_wifi(timeout=None):
 
 
 def init_mqtt():
-    mqtt_wrapper.init(
-        client_id=DHCP_HOSTNAME,
-        sub_topic=MQTT_TOPIC,
-        callback=on_mqtt_msg_received
-    )
+    try:
+        mqtt_wrapper.init(
+            client_id=DHCP_HOSTNAME,
+            sub_topic=MQTT_TOPIC,
+            callback=on_mqtt_msg_received
+        )
+    except OSError as ose:
+        print('OSError ', ose)
+        time.sleep(3)
+        machine.reset()
 
 
 def init_heartbeat_timer():
