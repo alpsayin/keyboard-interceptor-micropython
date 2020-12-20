@@ -1,26 +1,32 @@
 import time
 from machine import Pin
 from micropython import const
+import array
+
+NUM_SAMPLES = const(8)
 
 
 def _freq_counter_irq_falling(fc, pin_obj):
     now_us = time.ticks_us()
-    fc.ticks_delta = time.ticks_diff(now_us, fc.last_ticks_us)
-    fc.period_us = fc.ticks_delta
-    fc.freq_hz = round(1000000/fc.period_us)
-    print('{} freq {}'.format(pin_obj, fc.freq_hz))
+    fc.period_samples[fc.list_idx] = time.ticks_diff(now_us, fc.last_ticks_us)
+    fc.list_idx = (fc.list_idx + 1) % NUM_SAMPLES
     fc.last_ticks_us = now_us
-
 
 class FreqCounter():
     def __init__(self, pin_number):
         # super().__init__()
-        self.pin = Pin(pin_number, Pin.IN)
+        self.pin = Pin(pin_number, Pin.IN, Pin.PULL_UP)
         self.last_ticks_us = 0
-        self.period_us = 0
+        self.period_us = 100000
+        self.period_samples = array.array('L', [self.period_us] * NUM_SAMPLES)
         self.freq_hz = 10000
+        self.list_idx = 0
         self.pin.irq(
             trigger=Pin.IRQ_FALLING,
             handler=lambda pin_obj: _freq_counter_irq_falling(self, pin_obj)
         )
 
+    def average_samples(self):
+        self.period_us = sum(self.period_samples) / NUM_SAMPLES
+        print('{} periods {}'.format(self.pin, self.period_samples))
+        self.freq_hz = 1000000/self.period_us
