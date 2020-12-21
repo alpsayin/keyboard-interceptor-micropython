@@ -15,6 +15,10 @@ BOOT_TIME = const(3)
 DEVICE_FREQ = const(240 * 1000000)
 HEARTBEAT_PERIOD = const(1000)  # ms
 
+# keyscan code conversions
+keyscan_to_mqtt = keyscan.keyscan_no_convert
+mqtt_to_keyscan = keyscan.utf8_no_convert
+
 # wifi
 wlan = None
 from credentials import WLAN_SSID, WLAN_KEY
@@ -66,7 +70,7 @@ def check_uart():
 
 def flush_buffer():
     global capture_buffer, mqtt_fail
-    captured, processed_len = keyscan.keyscan_to_utf8(capture_buffer)
+    captured, processed_len = keyscan_to_mqtt(capture_buffer)
     capture_buffer = capture_buffer[processed_len:]
     if len(captured) != 0:
         try:
@@ -82,7 +86,7 @@ def simulate_capture(simulated_capture_str):
 
 
 def inject_string(inject_str):
-    inject_keyscan = keyscan.utf8_to_keyscan(inject_str.encode('utf-8'))
+    inject_keyscan = mqtt_to_keyscan(inject_str.encode('utf-8'))
     uart_wrapper.raw_uart.write(inject_keyscan)
 
 
