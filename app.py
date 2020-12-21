@@ -19,8 +19,6 @@ BOOT_TIME = const(3)
 DEVICE_FREQ = const(240 * 1000000)
 HEARTBEAT_PERIOD = const(1000)  # ms
 
-# display
-display = None
 # keyscan code conversions
 keyscan_to_mqtt = keyscan.keyscan_no_convert
 mqtt_to_keyscan = keyscan.utf8_no_convert
@@ -167,11 +165,11 @@ def handle_cmd(msg):
     else:
         print('Unknown MQTT message received: {}'.format(msg))
         return
-    display.update_popup(msg)
+    lcd.display.update_popup(msg)
 
 
 def on_mqtt_msg_received(topic, msg):
-    global status_dict, display
+    global status_dict
     if msg.startswith('#'):
         # print('MQTT comment: {}'.format(msg))
         return
@@ -316,15 +314,16 @@ def main_init():
     led.heartbeat_color = led.RED
     led.heartbeat(True)
 
-    display = lcd.Display()
-    display.init_lcd()
-    display.update_popup(subtitle=MQTT_TOPIC, cmd='n0n3!\nOn Init')
+    lcd.display = lcd.Display()
+    lcd.display.init_lcd()
+    lcd.display.update_popup(subtitle=MQTT_TOPIC, cmd='n0n3!\nOn Init')
 
-    display.wifi_connecting(WLAN_SSID, WLAN_KEY)
+    lcd.display.wifi_connecting(WLAN_SSID, WLAN_KEY)
     if(init_wifi()):
         led.heartbeat_color = led.GREEN
         ifconfig = wlan.ifconfig()
-        display.wifi_connected(ifconfig, status_dict['hostname'])
+        lcd.display.wifi_connected(ifconfig, status_dict['hostname'])
+
         print('Wifi initialised')
 
     if(uart_wrapper.init() is not None):
