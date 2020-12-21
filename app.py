@@ -7,6 +7,7 @@ from micropython import const, mem_info
 import gc
 import colors
 import lcd
+import repl_drop
 import mqtt_wrapper
 # import crypto_wrapper
 import crypto_wrapper_none as crypto_wrapper
@@ -181,14 +182,6 @@ def on_mqtt_msg_received(topic, msg):
     handle_cmd(msg)
 
 
-def repl_wait():
-    global BOOT_TIME
-    print('Press CTRL-C in {} seconds to drop to REPL'.format(BOOT_TIME), end='')
-    for seconds in range(BOOT_TIME):
-        print('\rPress CTRL-C in {} seconds to drop to REPL'.format(BOOT_TIME-seconds), end='')
-        print('.' * (seconds+1), end='')
-        time.sleep(1)
-    print('\rPress CTRL-C in 0 seconds to drop to REPL%s' % ('.' * BOOT_TIME))
 
 
 def update_auto_baudrate(new_freq):
@@ -353,7 +346,7 @@ def main_init():
 
 def main():
     global mqtt_fail
-    repl_wait()
+    repl_drop.wait(BOOT_TIME)
     print('app.py')
     main_init()
     while True:
