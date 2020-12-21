@@ -169,7 +169,7 @@ def handle_cmd(msg):
 def on_mqtt_msg_received(topic, msg):
     global status_dict, display
     if msg.startswith('#'):
-        print('MQTT comment: {}'.format(msg))
+        # print('MQTT comment: {}'.format(msg))
         return
     if not crypto_wrapper.is_encrypted(msg):
         print('Incoming MQTT message is not encrypted:'+msg.decode())
