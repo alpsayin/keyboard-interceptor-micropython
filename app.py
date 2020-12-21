@@ -1,5 +1,4 @@
 import machine, time, os
-import network
 import _thread
 import led
 from machine import Timer, WDT, Pin
@@ -8,6 +7,7 @@ import gc
 import colors
 import lcd
 import repl_drop
+import wlan_wrapper
 import mqtt_wrapper
 # import crypto_wrapper
 import crypto_wrapper_none as crypto_wrapper
@@ -24,7 +24,6 @@ keyscan_to_mqtt = keyscan.keyscan_no_convert
 mqtt_to_keyscan = keyscan.utf8_no_convert
 
 # wifi
-wlan = None
 from credentials import WLAN_SSID, WLAN_KEY
 DHCP_HOSTNAME = 'espresso0'
 
@@ -234,42 +233,6 @@ def print_status():
     status_dict['seconds'] += 1
 
 
-def restart_wifi(timeout=None):
-    global wlan
-    wlan.active(False)
-    time.sleep(1)
-    wlan.active(True)
-    wlan.connect(WLAN_SSID, WLAN_KEY)
-    start_time = time.time()
-    while not wlan.isconnected():
-        if timeout is not None:
-            if time.time()-start_time > timeout:
-                return False
-    print('network config:', wlan.ifconfig())
-    print('dhcp hostname', wlan.config('dhcp_hostname'))
-    status_dict.update(hostname=wlan.config('dhcp_hostname'))
-    return True
-
-
-def init_wifi(timeout=None):
-    global wlan, WLAN_SSID, WLAN_KEY, DHCP_HOSTNAME
-    wlan = network.WLAN(network.STA_IF)
-    wlan.active(True)
-    while wlan.status() != network.STAT_IDLE:
-        print('Waiting ifup for wlan'.format(wlan.status()))
-    wlan.config(dhcp_hostname=DHCP_HOSTNAME)
-    if not wlan.isconnected():
-        print('connecting to network...')
-        wlan.connect(WLAN_SSID, WLAN_KEY)
-        start_time = time.time()
-        while not wlan.isconnected():
-            if timeout is not None:
-                if time.time()-start_time > timeout:
-                    return False
-    print('network config:', wlan.ifconfig())
-    print('dhcp hostname', wlan.config('dhcp_hostname'))
-    status_dict.update(hostname=wlan.config('dhcp_hostname'))
-    return True
 
 
 def init_mqtt():
@@ -319,9 +282,10 @@ def main_init():
     lcd.display.update_popup(subtitle=MQTT_TOPIC, cmd='n0n3!\nOn Init')
 
     lcd.display.wifi_connecting(WLAN_SSID, WLAN_KEY)
-    if(init_wifi()):
+    if(wlan_wrapper.init_wifi(WLAN_SSID, WLAN_KEY, DHCP_HOSTNAME, timeout=None)):
         led.heartbeat_color = led.GREEN
-        ifconfig = wlan.ifconfig()
+        status_dict.update(hostname=wlan_wrapper.wlan.config('dhcp_hostname'))
+        ifconfig = wlan_wrapper.wlan.ifconfig()
         lcd.display.wifi_connected(ifconfig, status_dict['hostname'])
 
         print('Wifi initialised')
@@ -361,6 +325,5 @@ def main():
         if mqtt_fail:
             print('Trying to re-establish connection.')
             mqtt_fail = False
-            restart_wifi(3)
             init_mqtt()
         time.sleep(0.005)
