@@ -16,7 +16,7 @@ def _freq_counter_irq_falling(fc, pin_obj):
 class FreqCounter():
     def __init__(self, pin_number):
         # super().__init__()
-        self.pin = Pin(pin_number, Pin.IN, Pin.PULL_UP)
+        self.pin = Pin(pin_number, Pin.IN)
         self.last_ticks_us = 0
         self.period_us = int(1000000/DEFAULT_BAUDRATE)
         self.period_samples = array.array('L', [self.period_us] * NUM_SAMPLES)
