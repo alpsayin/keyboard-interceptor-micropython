@@ -214,6 +214,7 @@ def publish_timer_callback(timer_obj):
 def init_mqtt():
     try:
         mqtt_wrapper.init(
+            hostname=MQTT_HOSTNAME,
             client_id=DHCP_HOSTNAME,
             sub_topic=MQTT_TOPIC,
             callback=on_mqtt_msg_received
